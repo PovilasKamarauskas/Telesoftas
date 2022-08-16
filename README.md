@@ -21,4 +21,4 @@ A- I would write down basic functionality I want to see from Internal Search Eng
 *Is it heavily contrained?
 *Is it fast? 
    
-By following simple cases firstly, we can firstly make sure that main, desired functionality is working as user expects and afterwards start tackling edge cases if they are important to the product. 
+By following simple cases firstly, we can make sure that main, desired functionality is working as user expects and afterwards start tackling edge cases if they are important to the product. 
