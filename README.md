@@ -15,9 +15,10 @@ A-Tiketa search has a lot of different filters, so I would start with basic API 
 Q- How would you set up for testing this feature with automation in mind?
 
 A- I would write down basic functionality I want to see from Internal Search Engine:
-    Is it acurate?
-    Is it easy to use? 
-    Is it heavily contrained?
-    Is it fast? 
+
+*Is it acurate?
+*Is it easy to use? 
+*Is it heavily contrained?
+*Is it fast? 
    
 By following simple cases firstly, we can firstly make sure that main, desired functionality is working as user expects and afterwards start tackling edge cases if they are important to the product. 
