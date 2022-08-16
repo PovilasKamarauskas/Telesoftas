@@ -1,38 +1,18 @@
 package seleniumgluecode;
-import java.time.Duration;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
-import java.util.List;
-
-import org.openqa.selenium.By;
 import org.openqa.selenium.WebDriver;
-import org.openqa.selenium.WebElement;
 import org.openqa.selenium.chrome.ChromeDriver;
-import org.openqa.selenium.support.ui.ExpectedConditions;
-import org.openqa.selenium.support.ui.WebDriverWait;
-
-
 import io.cucumber.java.en.Given;
 import io.cucumber.java.en.Then;
 import io.cucumber.java.en.When;
 import Constants.contants.Dates;
-import Constants.contants.Labels;
-import Constants.contants.EventAmount;
-
+import pageObjects.EventsPage;
+import pageObjects.SearchPage;
+import pageObjects.SearchResultsPage;
+import pageObjects.waitUntilElementIsClickable;
 public class test {
-		
-	static Long monthDifference() {
-		LocalDate todayDate = LocalDate.now();
-		long monthsBetween = ChronoUnit.MONTHS.between(
-		        LocalDate.parse(todayDate.toString()).withDayOfMonth(1),
-		        LocalDate.parse(Dates.DATE_TO).withDayOfMonth(1));
-		return monthsBetween;
-	}
 	
-	static void waitUntilElementIsClickable(String cssSelector) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); 
-    	wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssSelector)));
-	}
+		
+	
 	
 	 public static WebDriver driver;
 		 
@@ -42,72 +22,66 @@ public class test {
 	        driver = new ChromeDriver();
 	        driver.manage().window().maximize();
 	        driver.manage().timeouts();
-	        driver.get("https://www.tiketa.lt/EN/search");
-	        try {
-	            WebElement date = driver.findElement(By.cssSelector("[id=\"cookiescript_accept\"]"));
-	            date.click();
-	        }
-	        catch(org.openqa.selenium.StaleElementReferenceException ex)
-	        {
-	            WebElement date = driver.findElement(By.cssSelector("[id=\"cookiescript_accept\"]"));
-	            date.click();
-	        }
-	        Thread.sleep(2000);
+			driver.get("https://www.tiketa.lt/EN/search");
 	    }
+
+		@When("^user accepts cookie")
+		public void user_accepts_cookie() throws InterruptedException {
+	    	SearchPage searchPage = new SearchPage(driver);
+	    	searchPage.acceptCookie();
+	        Thread.sleep(2000);
+		}
 	    
 	    @When("^user writes Corteo in Caption field$")
 	    public void user_writes_corteo_in_caption_field() throws Throwable {
-	        driver.findElement(By.cssSelector("[name='sf_TextFilter']")).sendKeys("Corteo");
-	        driver.findElement(By.xpath("//*[text()='"+Labels.CAPTION+"']")).click();	    
+	    	SearchPage searchPage = new SearchPage(driver);
+	    	searchPage.inputCaption("Corteo");
+	    	searchPage.loseCaptionFocus();   
 	    }
 	    
 	    @When("^user selects avia solutions group arena event place$")
 	    public void user_selects_arena_place() throws Throwable {
-	        driver.findElement(By.cssSelector("[id='arenaCaption']")).click();	 
-	        driver.findElement(By.cssSelector("[id='search-location'] [data-id=\"1\"]")).click();
+	    	SearchPage searchPage = new SearchPage(driver);
+	    	searchPage.openArenaList();
+	    	searchPage.selectAviaSolutionsArena();
 	    }
 	    
 	    @When("^user selects date by input")
 	    public void user_selects_date_by_input() throws Throwable {
-	    	driver.findElement(By.cssSelector("[name='sf_DateTo']")).sendKeys(Dates.DATE_TO);
-	    	driver.findElement(By.cssSelector("[name='sf_DateTo']")).clear();	    
+	    	SearchPage searchPage = new SearchPage(driver);
+	    	searchPage.fillDateTo(Dates.DATE_TO);
+	    	searchPage.clearDateTo();
 	    }
 	    
 	    @When("^user selects date by elements")
 	    public void user_selects_date_by_elements() throws Throwable {
-	        driver.findElement(By.xpath("//*[text()='"+Labels.DATE+"']")).click();	    
-	    	driver.findElement(By.cssSelector("[name='sf_DateTo']")).click();
-	    	waitUntilElementIsClickable("[title='Next']");
-	    	
-	    	for (int i = 0;i<monthDifference(); i++) {
-	    		driver.findElement(By.cssSelector("[title='Next']")).click();
-	    	}
-	    	driver.findElement(By.xpath("//td[@data-month=\""+ Dates.MONTH +"\"]/a[text()=\""+ Dates.DAY +"\"]")).click();
+	    	SearchPage searchPage = new SearchPage(driver);
+			waitUntilElementIsClickable clickableElement = new waitUntilElementIsClickable(driver);
+
+	    	searchPage.clickDateLabel();
+	    	searchPage.pressDateTo();
+	    	clickableElement.waitUntilClickable("[title='Next']");
+	    	searchPage.navigateToDecember(searchPage.countMonths());
+	    	searchPage.pressDay();
 	    }
 	    
 	    @When("^user presses search button")
 	    public void user_presses_search_button() throws Throwable {
-	    	driver.findElement(By.xpath("//button[text()=\"Search\"]")).click();
+	    	SearchPage searchPage = new SearchPage(driver);
+	    	searchPage.pressSearch();
 	    }
 	    
 	    @When("^user clicks buy")
 	    public void user_clicks_buy() throws Throwable {
-	    	driver.findElement(By.cssSelector("[id=\"btnBuy-22551\"]")).click(); //22551 unique event id
+	    	SearchResultsPage resultPage = new SearchResultsPage(driver);
+	    	resultPage.pressCorteoEvent();
 	    }
 	    
 	    @When("^user verifies list of tickets")
 	    public void user_verifies_list_of_tickets() throws Throwable {
-	    	List<WebElement> tickets = driver.findElements(By.xpath("//div[@class=\"page-content col-xs-12\"]"));
-	    	if(tickets.size()!= EventAmount.EVENT_AMOUNT) {
-	    		throw new Exception("Too much events returned");
-	    	}
-	    	for(int i=0;i<tickets.size();i++) {
-		    	if(tickets.get(i).getText().contains("CIRQUE DU SOLEIL - CORTEO")) {
-		    		continue;
-		    	} else {
-		    		throw new Exception("Random event got mixed up in the list.");
-		    	}
-		    }
+	    	EventsPage eventPage = new EventsPage(driver);
+	    	eventPage.checkAmountOfEvents();
+	    	eventPage.checkContent();
 	    }
 	    
 		@Then("^user quits")
