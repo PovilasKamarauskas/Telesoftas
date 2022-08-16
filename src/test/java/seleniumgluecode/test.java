@@ -30,7 +30,7 @@ public class test {
 	}
 	
 	static void waitUntilElementIsClickable(String cssSelector) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); 
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5)); 
     	wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssSelector)));
 	}
 	
@@ -40,8 +40,10 @@ public class test {
 	    public void user_opens_ticketa_search() throws Throwable {     
 	    	System.setProperty("webdriver.chrome.driver","chromedriver.exe");
 	        driver = new ChromeDriver();
+	        driver.manage().window().maximize();
 	        driver.manage().timeouts();
 	        driver.get("https://www.tiketa.lt/EN/search");
+	        waitUntilElementIsClickable("[id=\"cookiescript_accept\"]");
 	    }
 	    
 	    @When("^user writes Corteo in Caption field$")
@@ -81,6 +83,7 @@ public class test {
 	    
 	    @When("^user clicks buy")
 	    public void user_clicks_buy() throws Throwable {
+	        waitUntilElementIsClickable("[id=\"btnBuy-22551\"]");
 	    	driver.findElement(By.cssSelector("[id=\"btnBuy-22551\"]")).click(); //22551 unique event id
 	    }
 	    
