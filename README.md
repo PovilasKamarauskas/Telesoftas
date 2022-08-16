@@ -1,2 +1,3 @@
-# Telesoftas
-Test automation task of Telefostas
+*Test automation task.
+
+*How to run test
