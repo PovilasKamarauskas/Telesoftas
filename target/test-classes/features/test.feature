@@ -4,7 +4,6 @@ Feature: Login Feature
     Given user opens ticketa search
     When user writes Corteo in Caption field
     When user selects avia solutions group arena event place
-    When user selects date by input
     When user selects date by elements
     When user presses search button
     When user clicks buy

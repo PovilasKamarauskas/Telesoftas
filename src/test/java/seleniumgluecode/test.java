@@ -30,7 +30,7 @@ public class test {
 	}
 	
 	static void waitUntilElementIsClickable(String cssSelector) {
-		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(5)); 
+		WebDriverWait wait = new WebDriverWait(driver, Duration.ofSeconds(1)); 
     	wait.until(ExpectedConditions.elementToBeClickable(By.cssSelector(cssSelector)));
 	}
 	
@@ -43,7 +43,16 @@ public class test {
 	        driver.manage().window().maximize();
 	        driver.manage().timeouts();
 	        driver.get("https://www.tiketa.lt/EN/search");
-	        waitUntilElementIsClickable("[id=\"cookiescript_accept\"]");
+	        try {
+	            WebElement date = driver.findElement(By.cssSelector("[id=\"cookiescript_accept\"]"));
+	            date.click();
+	        }
+	        catch(org.openqa.selenium.StaleElementReferenceException ex)
+	        {
+	            WebElement date = driver.findElement(By.cssSelector("[id=\"cookiescript_accept\"]"));
+	            date.click();
+	        }
+	        Thread.sleep(2000);
 	    }
 	    
 	    @When("^user writes Corteo in Caption field$")
@@ -83,7 +92,6 @@ public class test {
 	    
 	    @When("^user clicks buy")
 	    public void user_clicks_buy() throws Throwable {
-	        waitUntilElementIsClickable("[id=\"btnBuy-22551\"]");
 	    	driver.findElement(By.cssSelector("[id=\"btnBuy-22551\"]")).click(); //22551 unique event id
 	    }
 	    
