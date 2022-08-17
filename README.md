@@ -7,6 +7,8 @@ How to run test
 3. Clone repository into your desired directory.
 4. Open CMD if Java and Maven correctly install execute mvn test and test case will run. 
 
+Selected to use POM pattern for tests expandability and easy of maintainance.
+
 Q- How would you test specifically the search feature on the tiketa platform? Suggest
 mechanism/layer rather than test cases.
 
