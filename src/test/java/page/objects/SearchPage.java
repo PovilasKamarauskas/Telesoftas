@@ -13,8 +13,6 @@ import constants.Constants.Dates;
 import constants.Constants.Labels;
 
 public class SearchPage {
-    WebDriver driver;
-
     public SearchPage(WebDriver driver) {
         PageFactory.initElements(driver, this);
     }
